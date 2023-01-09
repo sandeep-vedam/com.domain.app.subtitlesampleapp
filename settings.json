@@ -1,0 +1,22 @@
+{
+  "appSettings": {
+    "keys": {
+      "55": "Play",
+      "56": "Pause",
+      "57": "PlayPause",
+      "52": "Stop",
+      "53": "Forward",
+      "54": "Rewind"
+    },
+    "stage": {
+      "clearColor": "0x00000000",
+      "useImageWorker": true
+    },
+    "debug": false
+  },
+  "platformSettings": {
+    "path": "./static",
+    "log": true,
+    "showVersion": true
+  }
+}
