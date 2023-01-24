@@ -1,4 +1,4 @@
-import { Lightning } from 'Lightning-SDK'
+import { Lightning } from '@lightningjs/sdk'
 import TextItem from './TextItem'
 import BarIndicator from './BarIndicator'
 import ColorItem from './ColorItem'

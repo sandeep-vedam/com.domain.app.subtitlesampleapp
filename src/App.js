@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { Utils, Router } from 'Lightning-SDK'
+import { Utils, Router } from '@lightningjs/sdk'
 import routes from './lib/routes'
 
 export default class App extends Router.App {

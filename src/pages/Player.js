@@ -1,4 +1,4 @@
-import { Lightning, VideoPlayer, Subtitles } from 'Lightning-SDK'
+import { Lightning, VideoPlayer, Subtitles } from '@lightningjs/sdk'
 import Hls from 'hls.js'
 import VttCueParser from '../components/vttCueParser'
 import SubtitleSettings from '../components/SubtitleSettings'
@@ -137,24 +137,23 @@ export default class Player extends Lightning.Component {
     }
   }
   $videoPlayerTimeUpdate() {
-    this._currentCaption = VttCueParser.getSubtitleByTimeIndex(
+    const caption = VttCueParser.getSubtitleByTimeIndex(
       this._captionsList,
       VideoPlayer.currentTime,
     )
-    if (this._currentCaption !== undefined) {
-      Subtitles.text(this._currentCaption)
+    if (caption !== undefined) {
+      if(caption !== this._currentCaption) {
+        Subtitles.text(caption)
+        this._currentCaption = caption
+      }      
     } else {
-      Subtitles.text('')
+      Subtitles.clear()
     }
   }
 
   $videoPlayerLoadedData() {
     console.log('loaded data')
     Subtitles.show()
-    Subtitles.position({ x: 960, y: 990 })
-    Subtitles.background(0xffffffff)
-    Subtitles.color(0xff000000)
-    Subtitles.containerOpacity(91)
   }
 
   $videoPlayerCanPlay() {

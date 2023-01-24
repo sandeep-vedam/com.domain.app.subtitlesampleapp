@@ -1,4 +1,4 @@
-import { Lightning, Utils } from 'Lightning-SDK'
+import { Lightning, Utils } from '@lightningjs/sdk'
 
 export default class Loader extends Lightning.Component {
   static _template() {

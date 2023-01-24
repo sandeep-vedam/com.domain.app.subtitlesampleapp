@@ -1,4 +1,4 @@
-import { Lightning } from 'Lightning-SDK'
+import { Lightning } from '@lightningjs/sdk'
 import { List } from '@lightningjs/ui'
 
 export default class Tile extends Lightning.Component {

@@ -1,4 +1,4 @@
-import { Lightning, Subtitles } from 'Lightning-SDK'
+import { Lightning, Subtitles } from '@lightningjs/sdk'
 
 export default class ColorItem extends Lightning.Component {
   static _template() {
