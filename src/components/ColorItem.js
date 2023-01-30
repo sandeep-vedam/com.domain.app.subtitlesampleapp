@@ -1,78 +1,78 @@
-import { Lightning, Subtitles } from '@lightningjs/sdk'
+import Lightning from '@lightningjs/core';
+
+import {
+  focus,
+  settingFocused,
+} from '../lib/Styles';
 
 export default class ColorItem extends Lightning.Component {
-  static _template() {
-    return {
-      y: 5,
-      Background: {
-        alpha: 1,
-        w: 70,
-        h: 70,
-        rect: true,
-        shader: {
-          type: Lightning.shaders.RoundedRectangle,
-          radius: 35,
-          stroke: 10,
-          strokeColor: 0x004d4d4d,
-          fillColor: 0xffcb0000,
-        },
-      },
+    static _template() {
+        return {
+            Focus: {alpha: 0, x: w => w * 0.5, y: h => h * 0.5, mount: 0.5, w: 100, h:60, rect: true, shader: {type: Lightning.shaders.RoundedRectangle, radius: 30, stroke: 4, blend: 1, strokeColor: 0xffffffff, fillColor: 0x00ffffff}},
+            Color: {y: 3, w: 84, h: 44, rect: true, shader: {type: Lightning.shaders.RoundedRectangle, radius: 22}}
+        }
     }
-  }
 
-  set item(v) {
-    this._color = v
-    this.tag('Background').shader.fillColor = v
-  }
+    _construct() {
+        this._focusColor = focus;
+        this._focusInactive = settingFocused;
+        this._padding = 40;
+    }
 
-  _init() {
-    this._setState('Item')
-  }
-
-  set selected(v) {
-    this._isSelected = v
-    this.tag('Background').shader.strokeColor = this._isSelected ? 0xff4d4d4d : 0x004d4d4d
-  }
-  set index(v) {
-    this._idx = v
-  }
-
-  get index() {
-    return this._idx
-  }
-
-  set paramToBeChanged(v) {
-    this._paramToBeChanged = v
-  }
-
-  static get width() {
-    return 100
-  }
-  static get height() {
-    return 120
-  }
-
-  static _states() {
-    return [
-      class Item extends this {
-        _handleEnter() {
-          this.fireAncestors('$setSelectedIndex', this._idx)
-          switch (this._paramToBeChanged) {
-            case 'Font Color':
-              Subtitles.color(this._color)
-              break
-            case 'Background Color':
-              Subtitles.background(this._color)
-          }
+    _focus(from) {
+        if(!from) {
+            this.patch({
+                Focus: {smooth: {alpha: 1, color: this._focusColor}}
+            });
         }
-        _focus() {
-          this.tag('Background').shader.strokeColor = 0xff39b54a
+        else {
+            this.patch({
+                Focus: {smooth: {alpha: 1, color: 0xffffffff}}
+            });
         }
+    }
 
-        _unfocus() {
-          this.tag('Background').shader.strokeColor = this._isSelected ? 0xff4d4d4d : 0x004d4d4d
+    _unfocus(target) {
+        if(target && target.isCarouselItem === true) {
+            this.patch({
+                Focus: {smooth: {alpha: 0}}
+            });
         }
-      },
-    ]
-  }
+        if(target === undefined) {
+            this.patch({
+                Focus: {smooth: {alpha: 1, color: this._focusInactive}}
+            });
+        }
+    }
+
+    _firstActive() {
+        this.tag('Color').color = this.color;
+        if(this.collectionWrapper.hasFocus()) {
+            return;
+        }
+        const isSelected = this.cparent.componentIndex === this.collectionWrapper.cparent.carouselIndex;
+        this.patch({
+            Focus: {color: this._focusInactive, alpha: isSelected ? 1 : 0},
+        });
+        if(isSelected && this.collectionWrapper.cparent.hasFocus()) {
+            this._focus();
+        }
+    }
+
+    _handleEnter() {
+        this._focus(false);
+        return false;
+    }
+
+    get isCarouselItem() {
+        return true;
+    }
+
+    static get width() {
+        return 84;
+    }
+
+    static get height() {
+        return 50;
+    }
 }

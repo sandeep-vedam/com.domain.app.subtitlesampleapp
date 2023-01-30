@@ -2,8 +2,8 @@
   "name": "com.domain.app.subtitlesampleapp",
   "description": "subtitlesampleapp",
   "dependencies": {
-    "@lightningjs/sdk": "github:rdkcentral/Lightning-SDK#feature/SubtitlePlugin",
-    "@lightningjs/ui": "^1.3.3",
+    "@lightningjs/sdk": "github:jfboeve/Lightning-SDK#feature/SubtitlePlugin",
+    "@lightningjs/ui": "^1.3.6",
     "hls.js": "^1.1.3"
   },
   "lint-staged": {
