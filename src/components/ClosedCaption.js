@@ -44,7 +44,6 @@ export default class ClosedCaption extends Lightning.Component {
             padding: 44,
         }
 
-        //temp hard set
         this._currentSettings = Storage.get('ClosedCaptionSettings');
         if(!this._currentSettings) {
             this._currentSettings = {...default_settings}
@@ -155,13 +154,6 @@ export default class ClosedCaption extends Lightning.Component {
         ]
     }
 
-    _init() {
-        this.showSettingsAnimation = this.animation({duration: 0.5, stopMethod: 'reverse', actions: [
-            {p: 'y', v: {0: 1080 + 462, 1: 1050}}
-        ]});
-    }
-
-
     $adjustSetting() {
         this.tag('Blockout').setSmooth('alpha', 0.8);
     }
@@ -182,12 +174,12 @@ export default class ClosedCaption extends Lightning.Component {
 
     show() {
         this.alpha = 1;
-        Subtitles.viewportH(618);
+        Subtitles.viewport(this.application.finalW, 618);
     }
 
     hide() {
         this.alpha = 0;
-        Subtitles.viewportH(this.application.finalH);
+        Subtitles.viewportH(this.application.finalW, this.application.finalH);
     }
 
     _getFocused() {
