@@ -50,7 +50,7 @@ export default class ColorItem extends Lightning.Component {
         if(this.collectionWrapper.hasFocus()) {
             return;
         }
-        const isSelected = this.cparent.componentIndex === this.collectionWrapper.cparent.carouselIndex;
+        const isSelected = this.cparent.id === this.collectionWrapper.currentItemWrapper.id
         this.patch({
             Focus: {color: this._focusInactive, alpha: isSelected ? 1 : 0},
         });
