@@ -1,8 +1,18 @@
-import { Lightning, VideoPlayer, Subtitles } from '@lightningjs/sdk'
-import Hls from 'hls.js'
-import VttCueParser from '../components/vttCueParser'
-import SubtitleSettings from '../components/SubtitleSettings'
-import Loader from '../components/Loader'
+import Hls from 'hls.js';
+
+import {
+  Lightning,
+  Storage,
+  Subtitles,
+  VideoPlayer,
+} from '@lightningjs/sdk';
+
+import ClosedCaption from '../components/ClosedCaption';
+import Loader from '../components/Loader';
+import {
+  getDefaultSettings,
+  normalizeSettings,
+} from '../lib/Settings';
 
 export default class Player extends Lightning.Component {
   static _template() {
@@ -12,13 +22,10 @@ export default class Player extends Lightning.Component {
         x: 939,
         y: 519,
         type: Loader,
-        color: 0xfffd502b,
       },
-      SubtitleSettings: {
-        alpha: 0,
-        x: 1440,
-        y: 0,
-        type: SubtitleSettings,
+      ClosedCaptionConfig: {
+        zIndex: 4,
+        type: ClosedCaption,
       },
     }
   }
@@ -113,46 +120,58 @@ export default class Player extends Lightning.Component {
         resolve()
       })
     }
+
+    let ccs = Storage.get('ClosedCaptionSettings');
+    if(!ccs) {
+      ccs = getDefaultSettings();
+    }
+    else {
+      ccs = normalizeSettings(ccs);
+    }
+    Subtitles.styles(ccs); 
   }
   _active() {
     VideoPlayer.unloader(this._HLSunLoader)
     VideoPlayer.loader(this._HLSLoader)
     // VideoPlayer.open('https://d17bp2kqyryk7s.cloudfront.net/TWNQCCONT.m3u8')
-
+    https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8
     // Tastemade stream
     VideoPlayer.open(
       'https://cdn-uw2-prod.tsv2.amagi.tv/linear/tastemade-tastemademetrological/playlist.m3u8?uid=ee6723b8-7ab3-462c-8d93-dbf61227998e',
     )
-    this.tag('Loader').alpha = 1
+    this.tag('Loader').show();
     this._setState('Play')
   }
 
   $videoPlayerPlaying() {
-    this.tag('Loader').alpha = 0
+    this.tag('Loader').hide();
+  }
+
+  $videoPlayerTimeUpdate() {
     const video = document.getElementById('video-player')
-    for (var i = 0; i < video.textTracks.length; i++) {
+    let activeCues = [];
+    for (let i = 0; i < video.textTracks.length; i++) {
       if (video.textTracks[i].kind === 'captions' && video.textTracks[i].cues.length) {
-        this._captionsList = video.textTracks[i].cues
+        const cues = video.textTracks[i].activeCues;
+        for(let j = 0; j < cues.length; j++) {
+          activeCues.push(cues[j]);
+        }
+        break;
       }
     }
-  }
-  $videoPlayerTimeUpdate() {
-    const caption = VttCueParser.getSubtitleByTimeIndex(
-      this._captionsList,
-      VideoPlayer.currentTime,
-    )
-    if (caption !== undefined) {
+    if (activeCues && activeCues.length > 0) {
+      let caption = activeCues.sort((a, b) => a.line - b.line).map((c) => c.text).join('\n');
       if(caption !== this._currentCaption) {
         Subtitles.text(caption)
         this._currentCaption = caption
-      }      
+      }
     } else {
+      this._currentCaption = '';
       Subtitles.clear()
     }
   }
 
   $videoPlayerLoadedData() {
-    console.log('loaded data')
     Subtitles.show()
   }
 
@@ -168,17 +187,17 @@ export default class Player extends Lightning.Component {
     return [
       class Settings extends this {
         $enter() {
-          this.tag('SubtitleSettings').alpha = 1
+          this.tag('ClosedCaptionConfig').show()
         }
 
         $exit() {
-          this.tag('SubtitleSettings').alpha = 0.001
+          this.tag('ClosedCaptionConfig').hide()
         }
         _getFocused() {
-          return this.tag('SubtitleSettings')
+          return this.tag('ClosedCaptionConfig')
         }
 
-        _handleLeft() {
+        _handleUp() {
           this._setState('Play')
         }
       },

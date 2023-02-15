@@ -17,18 +17,21 @@
  * limitations under the License.
  */
 
-import { Utils, Router } from '@lightningjs/sdk'
-import routes from './lib/routes'
+import {
+  Router,
+  Utils,
+} from '@lightningjs/sdk';
+
+import routes from './lib/routes';
+import settings from './lib/Settings';
 
 export default class App extends Router.App {
   static getFonts() {
-    return [
-      { family: 'Roboto', url: Utils.asset('fonts/Roboto-Regular.ttf') },
-      { family: 'Italic', url: Utils.asset('fonts/HighwayItalic-yad3.otf') },
-      { family: 'Graphik', url: Utils.asset('fonts/GraphikBold.otf') },
-      { family: 'Liberator', url: Utils.asset('fonts/Liberator-Medium.otf') },
-    ]
-  }
+    const fonts = settings.fonts.map(({label, value}) => {
+			return {family: label, url: Utils.asset(value)}
+		});
+		return fonts
+	}
 
   static _template() {
     return {
