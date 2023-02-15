@@ -50,7 +50,7 @@ export default class ClosedCaption extends Lightning.Component {
         }
 
         const {fonts, fontSizes, fontOpacities, fontColors, backgroundOpacities, backgroundColors, horizontalAlignments, verticalAlignments} = Settings;
-        const {fontFamily, fontSize, fontOpacity, fontColor, backgroundOpacity, backgroundColor, xPos, yPos} = this._currentSettings;
+        const {fontFamily, fontSize, fontOpacity, fontColor, backgroundOpacity, backgroundColor, posX, posY} = this._currentSettings;
 
         const indexOf = (setting, settings) => {
             for(let i = 0; i < settings.length; i++) {
@@ -133,8 +133,8 @@ export default class ClosedCaption extends Lightning.Component {
                 ...styles,
                 type: CarouselStepper,
                 carouselSpacing: 56,
-                carouselIndex: indexOf(xPos, horizontalAlignments),
-                setting: 'xPos',
+                carouselIndex: indexOf(posX, horizontalAlignments),
+                setting: 'posX',
                 h: 80,
                 w: 930,
                 label: 'Horizontal Alignment',
@@ -144,8 +144,8 @@ export default class ClosedCaption extends Lightning.Component {
                 ...styles,
                 type: CarouselStepper,
                 carouselSpacing: 56,
-                carouselIndex: indexOf(yPos, verticalAlignments),
-                setting: 'yPos',
+                carouselIndex: indexOf(posY, verticalAlignments),
+                setting: 'posY',
                 h: 80,
                 w: 930,
                 label: 'Vertical Alignment',
@@ -168,7 +168,13 @@ export default class ClosedCaption extends Lightning.Component {
         const {target:t, value:v} = normalizeSetting(target, this._currentSettings);
         const styles = {};
         styles[t] = v;
-        Subtitles.styles(styles);
+        if(target === 'posY') {
+            Subtitles.position(this._currentSettings.posX, v);
+        } else if(target === 'posX') {
+            Subtitles.position(v, this._currentSettings.posY);
+        } else {
+            Subtitles.styles(styles);
+        }
         Storage.set('ClosedCaptionSettings', this._currentSettings);
     }
 
@@ -179,7 +185,7 @@ export default class ClosedCaption extends Lightning.Component {
 
     hide() {
         this.alpha = 0;
-        Subtitles.viewportH(this.application.finalW, this.application.finalH);
+        Subtitles.viewport(this.application.finalW, this.application.finalH);
     }
 
     _getFocused() {
