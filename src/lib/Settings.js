@@ -48,14 +48,14 @@ const core_settings = {
     },
     backgroundColors: colors,
     horizontalAlignments: {
-        'left': 0,
-        'center': 0.5,
-        'right': 1
+        'left': 'left',
+        'center': 'center',
+        'right': 'right'
     },
     verticalAlignments: {
-        'top': 0,
-        'center': 0.5,
-        'bottom': 1
+        'top': 'top',
+        'center': 'center',
+        'bottom': 'bottom'
     }
 }
 
