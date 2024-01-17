@@ -17,6 +17,6 @@
   "platformSettings": {
     "path": "./static",
     "log": true,
-    "showVersion": false
+    "showVersion": true
   }
 }
