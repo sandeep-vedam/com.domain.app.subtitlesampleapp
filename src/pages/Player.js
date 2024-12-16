@@ -135,10 +135,13 @@ export default class Player extends Lightning.Component {
     VideoPlayer.loader(this._HLSLoader)
     // VideoPlayer.open('https://d17bp2kqyryk7s.cloudfront.net/TWNQCCONT.m3u8')
     https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8
+    //Sample URL
+    VideoPlayer.open('https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_fmp4/master.m3u8')
+    
     // Tastemade stream
-    VideoPlayer.open(
-      'https://cdn-uw2-prod.tsv2.amagi.tv/linear/tastemade-tastemademetrological/playlist.m3u8?uid=ee6723b8-7ab3-462c-8d93-dbf61227998e',
-    )
+    // VideoPlayer.open(
+    //   'https://cdn-uw2-prod.tsv2.amagi.tv/linear/tastemade-tastemademetrological/playlist.m3u8?uid=ee6723b8-7ab3-462c-8d93-dbf61227998e',
+    // )
     this.tag('Loader').show();
     this._setState('Play')
   }
